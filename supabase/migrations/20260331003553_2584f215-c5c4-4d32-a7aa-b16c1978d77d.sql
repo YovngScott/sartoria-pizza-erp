@@ -1,0 +1,1 @@
+ALTER TABLE public.pizzas ADD COLUMN IF NOT EXISTS costo_fabricacion_dop numeric DEFAULT NULL;
