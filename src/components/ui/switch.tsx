@@ -1,7 +1,17 @@
+// ========================================== //
+//           COMPONENTE: SWITCH (INTERRUPTOR)   //
+// ========================================== //
+
 import * as React from "react";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: SWITCH (RAÍZ)                  //
+// ========================================== //
+// Control que permite alternar entre dos estados (on/off).
+// Estilizado para parecer un interruptor físico.
 
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
@@ -23,5 +33,9 @@ const Switch = React.forwardRef<
   </SwitchPrimitives.Root>
 ));
 Switch.displayName = SwitchPrimitives.Root.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DEL COMPONENTE                  //
+// ========================================== //
 
 export { Switch };

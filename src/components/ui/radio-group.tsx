@@ -1,8 +1,17 @@
+// ========================================== //
+//           COMPONENTE: RADIO GROUP            //
+// ========================================== //
+
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { Circle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: RADIO GROUP (RAÍZ)             //
+// ========================================== //
+// Contenedor para un conjunto de botones de radio, permitiendo selección única.
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -11,6 +20,12 @@ const RadioGroup = React.forwardRef<
   return <RadioGroupPrimitive.Root className={cn("grid gap-2", className)} {...props} ref={ref} />;
 });
 RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
+
+// ========================================== //
+// COMPONENTE: RADIO GROUP ITEM               //
+// ========================================== //
+// Botón de radio individual dentro del grupo.
+// Incluye un indicador visual (círculo) cuando está seleccionado.
 
 const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
@@ -32,5 +47,9 @@ const RadioGroupItem = React.forwardRef<
   );
 });
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL RADIO GROUP  //
+// ========================================== //
 
 export { RadioGroup, RadioGroupItem };

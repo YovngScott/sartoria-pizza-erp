@@ -1,3 +1,7 @@
+// ========================================== //
+//           COMPONENTE: CAROUSEL               //
+// ========================================== //
+
 import * as React from "react";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -5,10 +9,18 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
+// ========================================== //
+// TIPADO PARA EL API Y OPCIONES DE EMBLA     //
+// ========================================== //
+
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
 type CarouselOptions = UseCarouselParameters[0];
 type CarouselPlugin = UseCarouselParameters[1];
+
+// ========================================== //
+// DEFINICIÓN DE PROPS DEL CARRUSEL           //
+// ========================================== //
 
 type CarouselProps = {
   opts?: CarouselOptions;
@@ -26,6 +38,10 @@ type CarouselContextProps = {
   canScrollNext: boolean;
 } & CarouselProps;
 
+// ========================================== //
+// CONTEXTO DEL CARRUSEL                      //
+// ========================================== //
+
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
 function useCarousel() {
@@ -37,6 +53,12 @@ function useCarousel() {
 
   return context;
 }
+
+// ========================================== //
+// COMPONENTE: CAROUSEL (CONTENEDOR RAÍZ)      //
+// ========================================== //
+// Implementación principal utilizando embla-carousel para una experiencia suave
+// de desplazamiento, con soporte para teclado y estados de navegación.
 
 const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & CarouselProps>(
   ({ orientation = "horizontal", opts, setApi, plugins, className, children, ...props }, ref) => {
@@ -131,6 +153,11 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 );
 Carousel.displayName = "Carousel";
 
+// ========================================== //
+// COMPONENTE: CAROUSEL CONTENT               //
+// ========================================== //
+// Envoltura interna que contiene los items del carrusel.
+
 const CarouselContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
     const { carouselRef, orientation } = useCarousel();
@@ -148,6 +175,11 @@ const CarouselContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HT
 );
 CarouselContent.displayName = "CarouselContent";
 
+// ========================================== //
+// COMPONENTE: CAROUSEL ITEM                  //
+// ========================================== //
+// Diapositiva individual dentro del carrusel.
+
 const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
     const { orientation } = useCarousel();
@@ -164,6 +196,11 @@ const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
   },
 );
 CarouselItem.displayName = "CarouselItem";
+
+// ========================================== //
+// COMPONENTE: CAROUSEL PREVIOUS              //
+// ========================================== //
+// Botón para retroceder a la diapositiva anterior.
 
 const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
   ({ className, variant = "outline", size = "icon", ...props }, ref) => {
@@ -193,6 +230,11 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
 );
 CarouselPrevious.displayName = "CarouselPrevious";
 
+// ========================================== //
+// COMPONENTE: CAROUSEL NEXT                  //
+// ========================================== //
+// Botón para avanzar a la siguiente diapositiva.
+
 const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
   ({ className, variant = "outline", size = "icon", ...props }, ref) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
@@ -220,5 +262,9 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
   },
 );
 CarouselNext.displayName = "CarouselNext";
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES                  //
+// ========================================== //
 
 export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };

@@ -1,4 +1,9 @@
+// ========================================== //
+// IMPORTACIONES
+// ========================================== //
+// Importamos hooks de React para memorización y gestión de estados locales complejos
 import { useMemo, useState } from 'react';
+// Importamos iconos de lucide-react para señalización visual de estados y acciones
 import {
   AlertTriangle,
   Download,
@@ -9,30 +14,57 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
+// Importamos componentes para animaciones suaves y control de ciclos de vida de UI
 import { AnimatePresence, motion } from 'framer-motion';
+// Importamos la utilidad de notificaciones 'toast' para retroalimentación operativa
 import { toast } from 'sonner';
+// Importamos el cliente de Supabase para interactuar con el backend
 import { supabase } from '@/integrations/supabase/client';
+// Importamos tipos de TypeScript para asegurar la integridad de los datos
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+// Importamos el contexto de la aplicación para acceder al estado global del inventario
 import { useApp } from '@/contexts/CartContext';
+// Importamos el contexto de moneda para formatear valores económicos
 import { useCurrency } from '@/contexts/CurrencyContext';
 
+// ========================================== //
+// TIPOS Y DEFINICIONES
+// ========================================== //
+/**
+ * Tipo Ingrediente: Estructura de datos para un elemento del inventario.
+ */
 type Ingrediente = Tables<'ingredientes'>;
 
+// ========================================== //
+// COMPONENTE PRINCIPAL (ADMININVENTARIO)
+// ========================================== //
+/**
+ * AdminInventario: Panel de gestión técnica para el control de stock, costos y alertas de reabastecimiento.
+ */
 const AdminInventario = () => {
+  // ========================================== //
+  // ESTADO Y HOOKS
+  // ========================================== //
+  // Extraemos utilidades de moneda y datos globales
   const { format } = useCurrency();
   const { ingredientes, refreshData, unidadesMedida } = useApp();
 
+  // Estados para el control de edición en línea
   const [editingId, setEditingId] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<number | null>(null);
+
+  // Almacena los valores temporales durante la edición de una fila
   const [editValues, setEditValues] = useState({
     costo_unitario_actual: '',
     stock_actual: '',
     stock_minimo: '',
     unidad_medida_id: '',
   });
+
+  // Almacena los valores para la creación de un nuevo ingrediente
   const [newForm, setNewForm] = useState({
     costo_unitario_actual: '',
     nombre: '',
@@ -41,11 +73,23 @@ const AdminInventario = () => {
     unidad_medida_id: '',
   });
 
+  // ========================================== //
+  // CÁLCULOS MEMORIZADOS
+  // ========================================== //
+  /**
+   * unidadesPorId: Mapa eficiente para buscar códigos de unidad (KG, L, etc.) por su ID numérico.
+   */
   const unidadesPorId = useMemo(
     () => new Map(unidadesMedida.map((unidad) => [unidad.id, unidad.codigo] as const)),
     [unidadesMedida]
   );
 
+  // ========================================== //
+  // MANEJO DE EDICIÓN
+  // ========================================== //
+  /**
+   * startEdit: Activa el modo de edición para un ingrediente específico.
+   */
   const startEdit = (ingrediente: Ingrediente) => {
     setEditingId(ingrediente.id);
     setEditValues({
@@ -56,11 +100,18 @@ const AdminInventario = () => {
     });
   };
 
+  /**
+   * cancelEdit: Revierte los cambios no guardados y sale del modo edición.
+   */
   const cancelEdit = () => {
     setEditingId(null);
   };
 
+  /**
+   * saveEdit: Persiste los cambios realizados en una fila de ingrediente.
+   */
   const saveEdit = async (ingrediente: Ingrediente) => {
+    // Construimos el payload de actualización con conversiones numéricas
     const payload: TablesUpdate<'ingredientes'> = {
       costo_unitario_actual: Number(editValues.costo_unitario_actual),
       stock_actual: Number(editValues.stock_actual),
@@ -68,6 +119,7 @@ const AdminInventario = () => {
       unidad_medida_id: Number(editValues.unidad_medida_id),
     };
 
+    // Validación rigurosa de tipos y valores positivos
     if (
       !payload.unidad_medida_id ||
       [payload.costo_unitario_actual, payload.stock_actual, payload.stock_minimo].some(
@@ -80,6 +132,7 @@ const AdminInventario = () => {
 
     setSaving(true);
 
+    // Ejecutamos la actualización en Supabase
     const { error } = await supabase.from('ingredientes').update(payload).eq('id', ingrediente.id);
 
     if (error) {
@@ -88,12 +141,19 @@ const AdminInventario = () => {
       return;
     }
 
+    // Refrescamos datos y limpiamos estado
     await refreshData();
     setEditingId(null);
     setSaving(false);
     toast.success(`"${ingrediente.nombre}" actualizado`);
   };
 
+  // ========================================== //
+  // CREACIÓN Y ELIMINACIÓN
+  // ========================================== //
+  /**
+   * handleCreate: Inserta un nuevo registro de ingrediente en la base de datos.
+   */
   const handleCreate = async () => {
     const payload: TablesInsert<'ingredientes'> = {
       activo: true,
@@ -104,6 +164,7 @@ const AdminInventario = () => {
       unidad_medida_id: Number(newForm.unidad_medida_id),
     };
 
+    // Validación de campos obligatorios
     if (
       !payload.nombre ||
       !payload.unidad_medida_id ||
@@ -130,7 +191,7 @@ const AdminInventario = () => {
     }
 
     await refreshData();
-
+    // Limpiamos el formulario tras el éxito
     setNewForm({
       costo_unitario_actual: '',
       nombre: '',
@@ -143,6 +204,9 @@ const AdminInventario = () => {
     toast.success(`"${data.nombre}" agregado al inventario`);
   };
 
+  /**
+   * handleDelete: Remueve un ingrediente del sistema tras confirmación.
+   */
   const handleDelete = async (ingrediente: Ingrediente) => {
     if (!confirm(`Eliminar "${ingrediente.nombre}" del inventario?`)) return;
 
@@ -156,6 +220,7 @@ const AdminInventario = () => {
       return;
     }
 
+    // Si estábamos editando este item, cancelamos la edición
     if (editingId === ingrediente.id) {
       setEditingId(null);
     }
@@ -165,6 +230,12 @@ const AdminInventario = () => {
     toast.success(`"${ingrediente.nombre}" eliminado`);
   };
 
+  // ========================================== //
+  // EXPORTACIÓN CSV
+  // ========================================== //
+  /**
+   * exportCSV: Genera un reporte tabular en texto plano para hojas de cálculo.
+   */
   const exportCSV = () => {
     const headers = ['Ingrediente', 'Unidad', 'Stock Actual', 'Stock Minimo', 'Costo Unitario', 'Estado'];
     const rows = ingredientes.map((ingrediente) => {
@@ -190,19 +261,25 @@ const AdminInventario = () => {
     toast.success('Inventario exportado a CSV');
   };
 
+  // ========================================== //
+  // RENDERIZADO
+  // ========================================== //
   return (
     <div className="space-y-4">
+      {/* HEADER DE SECCIÓN */}
       <div className="flex items-center justify-between">
         <h2 className="font-display text-lg font-semibold text-foreground">
           Inventario de ingredientes
         </h2>
         <div className="flex items-center gap-2">
+          {/* Acción: Exportar */}
           <button
             onClick={exportCSV}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90"
           >
             <Download className="h-4 w-4" /> Exportar CSV
           </button>
+          {/* Acción: Mostrar formulario de creación */}
           <button
             onClick={() => setShowForm((current) => !current)}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90"
@@ -212,6 +289,7 @@ const AdminInventario = () => {
         </div>
       </div>
 
+      {/* SECCIÓN: FORMULARIO DE NUEVO INGREDIENTE */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -224,6 +302,7 @@ const AdminInventario = () => {
               Nuevo ingrediente
             </h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Input: Nombre */}
               <input
                 placeholder="Nombre *"
                 value={newForm.nombre}
@@ -232,6 +311,7 @@ const AdminInventario = () => {
                 }
                 className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
+              {/* Select: Unidad de Medida */}
               <select
                 value={newForm.unidad_medida_id}
                 onChange={(event) =>
@@ -249,6 +329,7 @@ const AdminInventario = () => {
                   </option>
                 ))}
               </select>
+              {/* Input: Stock Inicial */}
               <input
                 placeholder="Stock actual"
                 type="number"
@@ -261,6 +342,7 @@ const AdminInventario = () => {
                 }
                 className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
+              {/* Input: Punto de Reorden */}
               <input
                 placeholder="Stock minimo"
                 type="number"
@@ -273,6 +355,7 @@ const AdminInventario = () => {
                 }
                 className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
+              {/* Input: Costo Unitario */}
               <input
                 placeholder="Costo unitario"
                 type="number"
@@ -287,6 +370,7 @@ const AdminInventario = () => {
                 className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
+            {/* Acciones del formulario */}
             <div className="mt-4 flex gap-2">
               <button
                 onClick={handleCreate}
@@ -307,6 +391,7 @@ const AdminInventario = () => {
         )}
       </AnimatePresence>
 
+      {/* SECCIÓN: TABLA DE INVENTARIO */}
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
@@ -322,6 +407,7 @@ const AdminInventario = () => {
           </thead>
           <tbody>
             {ingredientes.map((ingrediente) => {
+              // Lógica visual para alerta de stock bajo
               const low = Number(ingrediente.stock_actual) < Number(ingrediente.stock_minimo);
               const isEditing = editingId === ingrediente.id;
 
@@ -332,7 +418,10 @@ const AdminInventario = () => {
                     low ? 'bg-destructive/10' : 'hover:bg-secondary/50'
                   }`}
                 >
+                  {/* Celda: Nombre del Ingrediente */}
                   <td className="px-4 py-3 font-medium text-foreground">{ingrediente.nombre}</td>
+                  
+                  {/* Celda: Unidad de Medida */}
                   <td className="px-4 py-3 text-right">
                     {isEditing ? (
                       <select
@@ -357,6 +446,8 @@ const AdminInventario = () => {
                       </span>
                     )}
                   </td>
+
+                  {/* Celda: Stock Actual (Editable) */}
                   <td className="px-4 py-3 text-right">
                     {isEditing ? (
                       <input
@@ -376,6 +467,8 @@ const AdminInventario = () => {
                       </span>
                     )}
                   </td>
+
+                  {/* Celda: Stock Mínimo (Editable) */}
                   <td className="px-4 py-3 text-right">
                     {isEditing ? (
                       <input
@@ -395,6 +488,8 @@ const AdminInventario = () => {
                       </span>
                     )}
                   </td>
+
+                  {/* Celda: Costo Unitario (Editable) */}
                   <td className="px-4 py-3 text-right">
                     {isEditing ? (
                       <input
@@ -415,6 +510,8 @@ const AdminInventario = () => {
                       </span>
                     )}
                   </td>
+
+                  {/* Celda: Estado Visual */}
                   <td className="px-4 py-3 text-center">
                     {low ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-medium text-destructive">
@@ -426,6 +523,8 @@ const AdminInventario = () => {
                       </span>
                     )}
                   </td>
+
+                  {/* Celda: Acciones (Editar/Eliminar/Guardar/Cancelar) */}
                   <td className="px-4 py-3 text-center">
                     {isEditing ? (
                       <div className="flex items-center justify-center gap-1">
@@ -479,4 +578,7 @@ const AdminInventario = () => {
   );
 };
 
+// ========================================== //
+// EXPORTACIÓN
+// ========================================== //
 export default AdminInventario;

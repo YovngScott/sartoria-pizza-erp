@@ -1,11 +1,25 @@
+// ========================================== //
+//           COMPONENTE: HOVER CARD             //
+// ========================================== //
+
 import * as React from "react";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
 
 import { cn } from "@/lib/utils";
 
+// ========================================== //
+// COMPONENTES BASE DE HOVER CARD             //
+// ========================================== //
+
 const HoverCard = HoverCardPrimitive.Root;
 
 const HoverCardTrigger = HoverCardPrimitive.Trigger;
+
+// ========================================== //
+// COMPONENTE: HOVER CARD CONTENT             //
+// ========================================== //
+// Contenido que se muestra al pasar el cursor sobre el disparador.
+// Incluye animaciones y estilos de posicionamiento.
 
 const HoverCardContent = React.forwardRef<
   React.ElementRef<typeof HoverCardPrimitive.Content>,
@@ -23,5 +37,9 @@ const HoverCardContent = React.forwardRef<
   />
 ));
 HoverCardContent.displayName = HoverCardPrimitive.Content.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES                  //
+// ========================================== //
 
 export { HoverCard, HoverCardTrigger, HoverCardContent };

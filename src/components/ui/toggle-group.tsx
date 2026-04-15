@@ -1,3 +1,7 @@
+// ========================================== //
+//           COMPONENTE: TOGGLE GROUP           //
+// ========================================== //
+
 import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import { type VariantProps } from "class-variance-authority";
@@ -5,10 +9,21 @@ import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { toggleVariants } from "@/components/ui/toggle";
 
+// ========================================== //
+// CONTEXTO DEL GRUPO DE TOGGLE               //
+// ========================================== //
+// Proporciona variantes de estilo (size, variant) a todos los items del grupo.
+
 const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants>>({
   size: "default",
   variant: "default",
 });
+
+// ========================================== //
+// COMPONENTE: TOGGLE GROUP (RAÍZ)            //
+// ========================================== //
+// Conjunto de botones de tipo interruptor (toggle) que pueden funcionar
+// de forma individual o como selección única/múltiple.
 
 const ToggleGroup = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Root>,
@@ -20,6 +35,11 @@ const ToggleGroup = React.forwardRef<
 ));
 
 ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
+
+// ========================================== //
+// COMPONENTE: TOGGLE GROUP ITEM              //
+// ========================================== //
+// Botón individual dentro de un grupo de toggle.
 
 const ToggleGroupItem = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Item>,
@@ -45,5 +65,9 @@ const ToggleGroupItem = React.forwardRef<
 });
 
 ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES                  //
+// ========================================== //
 
 export { ToggleGroup, ToggleGroupItem };

@@ -1,7 +1,17 @@
+// ========================================== //
+//           COMPONENTE: RESIZABLE              //
+// ========================================== //
+
 import { GripVertical } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: RESIZABLE PANEL GROUP          //
+// ========================================== //
+// Contenedor principal que permite agrupar paneles redimensionables.
+// Soporta direcciones horizontal y vertical.
 
 const ResizablePanelGroup = ({ className, ...props }: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) => (
   <ResizablePrimitive.PanelGroup
@@ -10,7 +20,18 @@ const ResizablePanelGroup = ({ className, ...props }: React.ComponentProps<typeo
   />
 );
 
+// ========================================== //
+// COMPONENTE: RESIZABLE PANEL                //
+// ========================================== //
+// Panel individual dentro de un grupo redimensionable.
+
 const ResizablePanel = ResizablePrimitive.Panel;
+
+// ========================================== //
+// COMPONENTE: RESIZABLE HANDLE               //
+// ========================================== //
+// El control interactivo que el usuario arrastra para cambiar el tamaño de los paneles.
+// Puede incluir un icono visual (GripVertical).
 
 const ResizableHandle = ({
   withHandle,
@@ -33,5 +54,9 @@ const ResizableHandle = ({
     )}
   </ResizablePrimitive.PanelResizeHandle>
 );
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES                  //
+// ========================================== //
 
 export { ResizablePanelGroup, ResizablePanel, ResizableHandle };

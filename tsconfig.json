@@ -1,3 +1,6 @@
+// ========================================== //
+//           CONFIGURACIÓN: TYPESCRIPT (ROOT)   //
+// ========================================== //
 {
   "compilerOptions": {
     "allowJs": true,
@@ -22,3 +25,8 @@
     }
   ]
 }
+// ========================================== //
+// NOTA: CONFIGURACIÓN DIVIDIDA POR PROYECTOS //
+// ========================================== //
+// Este archivo actúa como contenedor principal, referenciando las configuraciones
+// específicas para la aplicación y para el entorno de node/build.

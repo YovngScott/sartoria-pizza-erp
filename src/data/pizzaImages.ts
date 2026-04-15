@@ -1,3 +1,7 @@
+// ========================================== //
+//           DATA: PIZZA IMAGES (ASSETS)        //
+// ========================================== //
+
 import capricciosa from '@/assets/pizza-capricciosa.jpg';
 import diavola from '@/assets/pizza-diavola.jpg';
 import margherita from '@/assets/pizza-margherita.jpg';
@@ -8,6 +12,11 @@ import prosciutto from '@/assets/pizza-prosciutto.jpg';
 import quattro from '@/assets/pizza-quattro.jpg';
 import sartoria from '@/assets/pizza-sartoria.jpg';
 import tartufo from '@/assets/pizza-tartufo.jpg';
+
+// ========================================== //
+// MAPEO DE IMÁGENES POR CÓDIGO DE PRODUCTO   //
+// ========================================== //
+// Relaciona los slugs de las pizzas con sus correspondientes archivos de imagen importados.
 
 export const pizzaImages: Record<string, string> = {
   capricciosa: capricciosa,

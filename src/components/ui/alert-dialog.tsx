@@ -1,14 +1,30 @@
+// ========================================== //
+//           COMPONENTE: ALERT DIALOG           //
+// ========================================== //
+
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
+// ========================================== //
+// DEFINICIÓN DE COMPONENTES BASE DE RADIX UI  //
+// ========================================== //
+// Se exportan las funcionalidades principales del Alert Dialog de Radix UI
+// que no requieren personalización de estilos inmediata.
+
 const AlertDialog = AlertDialogPrimitive.Root;
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
+
+// ========================================== //
+// COMPONENTE: ALERT DIALOG OVERLAY           //
+// ========================================== //
+// Capa de fondo semi-transparente que bloquea la interacción con el resto
+// de la página cuando el diálogo está abierto.
 
 const AlertDialogOverlay = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
@@ -24,6 +40,12 @@ const AlertDialogOverlay = React.forwardRef<
   />
 ));
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
+
+// ========================================== //
+// COMPONENTE: ALERT DIALOG CONTENT           //
+// ========================================== //
+// Contenedor principal que alberga el contenido del diálogo de alerta.
+// Incluye posicionamiento central y animaciones de entrada/salida.
 
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
@@ -43,15 +65,30 @@ const AlertDialogContent = React.forwardRef<
 ));
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
 
+// ========================================== //
+// COMPONENTE: ALERT DIALOG HEADER            //
+// ========================================== //
+// Sección superior del diálogo, generalmente utilizada para el título y descripción.
+
 const AlertDialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...props} />
 );
 AlertDialogHeader.displayName = "AlertDialogHeader";
 
+// ========================================== //
+// COMPONENTE: ALERT DIALOG FOOTER            //
+// ========================================== //
+// Sección inferior del diálogo donde se ubican los botones de acción (Cancelar/Confirmar).
+
 const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)} {...props} />
 );
 AlertDialogFooter.displayName = "AlertDialogFooter";
+
+// ========================================== //
+// COMPONENTE: ALERT DIALOG TITLE             //
+// ========================================== //
+// Título principal del diálogo de alerta, configurado para accesibilidad.
 
 const AlertDialogTitle = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
@@ -61,6 +98,11 @@ const AlertDialogTitle = React.forwardRef<
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
+// ========================================== //
+// COMPONENTE: ALERT DIALOG DESCRIPTION       //
+// ========================================== //
+// Texto descriptivo que proporciona contexto adicional sobre la alerta.
+
 const AlertDialogDescription = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
@@ -69,6 +111,11 @@ const AlertDialogDescription = React.forwardRef<
 ));
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 
+// ========================================== //
+// COMPONENTE: ALERT DIALOG ACTION            //
+// ========================================== //
+// Botón principal de acción dentro del diálogo (ej. "Eliminar", "Aceptar").
+
 const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
@@ -76,6 +123,11 @@ const AlertDialogAction = React.forwardRef<
   <AlertDialogPrimitive.Action ref={ref} className={cn(buttonVariants(), className)} {...props} />
 ));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
+
+// ========================================== //
+// COMPONENTE: ALERT DIALOG CANCEL            //
+// ========================================== //
+// Botón para cancelar la acción y cerrar el diálogo.
 
 const AlertDialogCancel = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
@@ -88,6 +140,10 @@ const AlertDialogCancel = React.forwardRef<
   />
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL DIÁLOGO      //
+// ========================================== //
 
 export {
   AlertDialog,

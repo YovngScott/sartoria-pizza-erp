@@ -1,10 +1,23 @@
+// ========================================== //
+//           CONFIGURACIÓN: TAILWIND CSS        //
+// ========================================== //
+
 import type { Config } from "tailwindcss";
 
 export default {
+  // --- MODO OSCURO ---
+  // Utiliza una clase CSS para alternar entre temas claro y oscuro.
   darkMode: ["class"],
+
+  // --- CONTENIDO A PROCESAR ---
+  // Define las rutas donde Tailwind buscará clases para generar el CSS final.
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  
   prefix: "",
+
+  // --- TEMA PERSONALIZADO ---
   theme: {
+    // Configuración del contenedor principal
     container: {
       center: true,
       padding: "2rem",
@@ -13,10 +26,12 @@ export default {
       },
     },
     extend: {
+      // Tipografías personalizadas
       fontFamily: {
         display: ['"Playfair Display"', 'serif'],
         sans: ['Inter', 'sans-serif'],
       },
+      // Paleta de colores extendida con variables CSS (HSL)
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -75,11 +90,13 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      // Radios de borde personalizados
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      // Definición de animaciones personalizadas
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -101,5 +118,6 @@ export default {
       },
     },
   },
+  // --- PLUGINS DE TAILWIND ---
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

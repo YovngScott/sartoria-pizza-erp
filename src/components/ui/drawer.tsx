@@ -1,7 +1,17 @@
+// ========================================== //
+//           COMPONENTE: DRAWER (CAJÓN)         //
+// ========================================== //
+
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: DRAWER (RAÍZ)                  //
+// ========================================== //
+// Implementación de un panel deslizante (drawer) utilizando la librería 'vaul'.
+// Ideal para interfaces móviles y menús laterales.
 
 const Drawer = ({ shouldScaleBackground = true, ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root shouldScaleBackground={shouldScaleBackground} {...props} />
@@ -14,6 +24,11 @@ const DrawerPortal = DrawerPrimitive.Portal;
 
 const DrawerClose = DrawerPrimitive.Close;
 
+// ========================================== //
+// COMPONENTE: DRAWER OVERLAY                 //
+// ========================================== //
+// Fondo oscurecido que aparece tras el drawer.
+
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
@@ -21,6 +36,11 @@ const DrawerOverlay = React.forwardRef<
   <DrawerPrimitive.Overlay ref={ref} className={cn("fixed inset-0 z-50 bg-black/80", className)} {...props} />
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
+
+// ========================================== //
+// COMPONENTE: DRAWER CONTENT                 //
+// ========================================== //
+// Contenedor principal del contenido del drawer, con estilos de posicionamiento.
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
@@ -43,15 +63,30 @@ const DrawerContent = React.forwardRef<
 ));
 DrawerContent.displayName = "DrawerContent";
 
+// ========================================== //
+// COMPONENTE: DRAWER HEADER                  //
+// ========================================== //
+// Encabezado del drawer para títulos y descripciones.
+
 const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("grid gap-1.5 p-4 text-center sm:text-left", className)} {...props} />
 );
 DrawerHeader.displayName = "DrawerHeader";
 
+// ========================================== //
+// COMPONENTE: DRAWER FOOTER                  //
+// ========================================== //
+// Pie del drawer para botones de acción.
+
 const DrawerFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("mt-auto flex flex-col gap-2 p-4", className)} {...props} />
 );
 DrawerFooter.displayName = "DrawerFooter";
+
+// ========================================== //
+// COMPONENTE: DRAWER TITLE                   //
+// ========================================== //
+// Título del drawer.
 
 const DrawerTitle = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Title>,
@@ -65,6 +100,11 @@ const DrawerTitle = React.forwardRef<
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
+// ========================================== //
+// COMPONENTE: DRAWER DESCRIPTION             //
+// ========================================== //
+// Descripción o texto secundario del drawer.
+
 const DrawerDescription = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
@@ -72,6 +112,10 @@ const DrawerDescription = React.forwardRef<
   <DrawerPrimitive.Description ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
 ));
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL DRAWER       //
+// ========================================== //
 
 export {
   Drawer,

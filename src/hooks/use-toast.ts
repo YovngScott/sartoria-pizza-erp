@@ -1,9 +1,21 @@
+// ========================================== //
+//           HOOK: USE TOAST (GESTIÓN)          //
+// ========================================== //
+
 import * as React from "react";
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
+// ========================================== //
+// CONFIGURACIÓN DE LÍMITES Y TIEMPOS         //
+// ========================================== //
+
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
+
+// ========================================== //
+// DEFINICIÓN DE TIPOS PARA NOTIFICACIONES    //
+// ========================================== //
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -50,6 +62,10 @@ interface State {
   toasts: ToasterToast[];
 }
 
+// ========================================== //
+// GESTIÓN DE ESTADO GLOBAL DE TOASTS         //
+// ========================================== //
+
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
 const addToRemoveQueue = (toastId: string) => {
@@ -68,6 +84,10 @@ const addToRemoveQueue = (toastId: string) => {
   toastTimeouts.set(toastId, timeout);
 };
 
+// ========================================== //
+// REDUCER PARA ACCIONES DE TOAST             //
+// ========================================== //
+
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
@@ -85,8 +105,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
@@ -134,6 +152,10 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">;
 
+// ========================================== //
+// FUNCIÓN TOAST: DISPARADOR DE NOTIFICACIÓN  //
+// ========================================== //
+
 function toast({ ...props }: Toast) {
   const id = genId();
 
@@ -162,6 +184,12 @@ function toast({ ...props }: Toast) {
     update,
   };
 }
+
+// ========================================== //
+// HOOK PERSONALIZADO: USE TOAST              //
+// ========================================== //
+// Permite a los componentes suscribirse al estado de las notificaciones
+// y disparar nuevos toasts.
 
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState);

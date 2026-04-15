@@ -1,7 +1,17 @@
+// ========================================== //
+//           COMPONENTE: SLIDER (DESLIZADOR)    //
+// ========================================== //
+
 import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: SLIDER (RAÍZ)                  //
+// ========================================== //
+// Entrada de datos que permite seleccionar un valor de un rango desplazando un control.
+// Utiliza los primitivos de Radix UI para soporte táctil y accesibilidad.
 
 const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
@@ -19,5 +29,9 @@ const Slider = React.forwardRef<
   </SliderPrimitive.Root>
 ));
 Slider.displayName = SliderPrimitive.Root.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DEL COMPONENTE                  //
+// ========================================== //
 
 export { Slider };

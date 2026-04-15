@@ -1,8 +1,16 @@
+// ========================================== //
+//           COMPONENTE: MENUBAR                //
+// ========================================== //
+
 import * as React from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
 import { Check, ChevronRight, Circle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTES BASE DE RADIX MENUBAR          //
+// ========================================== //
 
 const MenubarMenu = MenubarPrimitive.Menu;
 
@@ -13,6 +21,11 @@ const MenubarPortal = MenubarPrimitive.Portal;
 const MenubarSub = MenubarPrimitive.Sub;
 
 const MenubarRadioGroup = MenubarPrimitive.RadioGroup;
+
+// ========================================== //
+// COMPONENTE: MENUBAR (RAÍZ)                 //
+// ========================================== //
+// Contenedor principal para una barra de menú horizontal, similar a las de escritorio.
 
 const Menubar = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Root>,
@@ -25,6 +38,11 @@ const Menubar = React.forwardRef<
   />
 ));
 Menubar.displayName = MenubarPrimitive.Root.displayName;
+
+// ========================================== //
+// COMPONENTE: MENUBAR TRIGGER                //
+// ========================================== //
+// Botón que abre el menú correspondiente dentro de la barra.
 
 const MenubarTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Trigger>,
@@ -40,6 +58,11 @@ const MenubarTrigger = React.forwardRef<
   />
 ));
 MenubarTrigger.displayName = MenubarPrimitive.Trigger.displayName;
+
+// ========================================== //
+// COMPONENTE: MENUBAR SUB TRIGGER            //
+// ========================================== //
+// Disparador para sub-menús dentro de un menú.
 
 const MenubarSubTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubTrigger>,
@@ -62,6 +85,11 @@ const MenubarSubTrigger = React.forwardRef<
 ));
 MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
 
+// ========================================== //
+// COMPONENTE: MENUBAR SUB CONTENT            //
+// ========================================== //
+// Contenido del sub-menú.
+
 const MenubarSubContent = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.SubContent>
@@ -76,6 +104,11 @@ const MenubarSubContent = React.forwardRef<
   />
 ));
 MenubarSubContent.displayName = MenubarPrimitive.SubContent.displayName;
+
+// ========================================== //
+// COMPONENTE: MENUBAR CONTENT                //
+// ========================================== //
+// Contenedor de los items del menú desplegable.
 
 const MenubarContent = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Content>,
@@ -97,6 +130,11 @@ const MenubarContent = React.forwardRef<
 ));
 MenubarContent.displayName = MenubarPrimitive.Content.displayName;
 
+// ========================================== //
+// COMPONENTE: MENUBAR ITEM                   //
+// ========================================== //
+// Item individual dentro de un menú.
+
 const MenubarItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Item> & {
@@ -114,6 +152,11 @@ const MenubarItem = React.forwardRef<
   />
 ));
 MenubarItem.displayName = MenubarPrimitive.Item.displayName;
+
+// ========================================== //
+// COMPONENTE: MENUBAR CHECKBOX ITEM          //
+// ========================================== //
+// Item con estado de selección (check).
 
 const MenubarCheckboxItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.CheckboxItem>,
@@ -138,6 +181,11 @@ const MenubarCheckboxItem = React.forwardRef<
 ));
 MenubarCheckboxItem.displayName = MenubarPrimitive.CheckboxItem.displayName;
 
+// ========================================== //
+// COMPONENTE: MENUBAR RADIO ITEM             //
+// ========================================== //
+// Item de selección única dentro de un grupo de radio.
+
 const MenubarRadioItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.RadioItem>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.RadioItem>
@@ -160,6 +208,11 @@ const MenubarRadioItem = React.forwardRef<
 ));
 MenubarRadioItem.displayName = MenubarPrimitive.RadioItem.displayName;
 
+// ========================================== //
+// COMPONENTE: MENUBAR LABEL                  //
+// ========================================== //
+// Etiqueta informativa dentro del menú.
+
 const MenubarLabel = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Label> & {
@@ -174,6 +227,11 @@ const MenubarLabel = React.forwardRef<
 ));
 MenubarLabel.displayName = MenubarPrimitive.Label.displayName;
 
+// ========================================== //
+// COMPONENTE: MENUBAR SEPARATOR              //
+// ========================================== //
+// Divisor visual entre items del menú.
+
 const MenubarSeparator = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Separator>
@@ -182,10 +240,19 @@ const MenubarSeparator = React.forwardRef<
 ));
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
 
+// ========================================== //
+// COMPONENTE: MENUBAR SHORTCUT               //
+// ========================================== //
+// Muestra el atajo de teclado para la acción.
+
 const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
   return <span className={cn("ml-auto text-xs tracking-widest text-muted-foreground", className)} {...props} />;
 };
 MenubarShortcut.displayname = "MenubarShortcut";
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL MENUBAR      //
+// ========================================== //
 
 export {
   Menubar,

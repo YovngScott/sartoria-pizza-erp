@@ -1,3 +1,6 @@
+// ========================================== //
+//           CONFIGURACIÓN: SHADCN/UI           //
+// ========================================== //
 {
   "$schema": "https://ui.shadcn.com/schema.json",
   "style": "default",
@@ -18,3 +21,8 @@
     "hooks": "@/hooks"
   }
 }
+// ========================================== //
+// NOTA: GESTIÓN DE COMPONENTES UI            //
+// ========================================== //
+// Define la estructura y alias para la generación automática de componentes
+// utilizando el CLI de shadcn/ui.

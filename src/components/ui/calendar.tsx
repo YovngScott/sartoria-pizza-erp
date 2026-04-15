@@ -1,3 +1,7 @@
+// ========================================== //
+//           COMPONENTE: CALENDAR               //
+// ========================================== //
+
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
@@ -5,7 +9,17 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
+// ========================================== //
+// DEFINICIÓN DE PROPS DEL CALENDARIO         //
+// ========================================== //
+
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+// ========================================== //
+// COMPONENTE: CALENDAR                       //
+// ========================================== //
+// Basado en 'react-day-picker', este componente ofrece una interfaz de selección
+// de fechas altamente personalizable con estilos Tailwind CSS.
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
   return (
@@ -50,5 +64,9 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
   );
 }
 Calendar.displayName = "Calendar";
+
+// ========================================== //
+// EXPORTACIÓN DEL COMPONENTE                  //
+// ========================================== //
 
 export { Calendar };

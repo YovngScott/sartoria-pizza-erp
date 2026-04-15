@@ -1,10 +1,21 @@
+// ========================================== //
+//           COMPONENTE: CHART (GRÁFICOS)       //
+// ========================================== //
+
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
 
-// Format: { THEME_NAME: CSS_SELECTOR }
+// ========================================== //
+// DEFINICIÓN DE TEMAS DISPONIBLES            //
+// ========================================== //
+// Formato: { NOMBRE_TEMA: SELECTOR_CSS }
 const THEMES = { light: "", dark: ".dark" } as const;
+
+// ========================================== //
+// CONFIGURACIÓN DE TIPADO PARA GRÁFICOS      //
+// ========================================== //
 
 export type ChartConfig = {
   [k in string]: {
@@ -17,6 +28,10 @@ type ChartContextProps = {
   config: ChartConfig;
 };
 
+// ========================================== //
+// CONTEXTO PARA CONFIGURACIÓN DE GRÁFICOS    //
+// ========================================== //
+
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
 function useChart() {
@@ -28,6 +43,12 @@ function useChart() {
 
   return context;
 }
+
+// ========================================== //
+// COMPONENTE: CHART CONTAINER                //
+// ========================================== //
+// Proporciona el contexto y los estilos base para los gráficos de Recharts.
+// Maneja la inyección de variables CSS para colores dinámicos basados en temas.
 
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
@@ -58,6 +79,12 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = "Chart";
 
+// ========================================== //
+// COMPONENTE: CHART STYLE                    //
+// ========================================== //
+// Genera dinámicamente bloques de estilos CSS basados en la configuración de colores
+// proporcionada para el gráfico.
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 
@@ -87,7 +114,18 @@ ${colorConfig
   );
 };
 
+// ========================================== //
+// COMPONENTE: CHART TOOLTIP                  //
+// ========================================== //
+// Re-exportación directa del componente Tooltip de Recharts.
+
 const ChartTooltip = RechartsPrimitive.Tooltip;
+
+// ========================================== //
+// COMPONENTE: CHART TOOLTIP CONTENT          //
+// ========================================== //
+// Personalización avanzada del contenido del tooltip, incluyendo indicadores de color,
+// iconos y formateo de etiquetas basado en la configuración centralizada.
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
@@ -225,7 +263,18 @@ const ChartTooltipContent = React.forwardRef<
 );
 ChartTooltipContent.displayName = "ChartTooltip";
 
+// ========================================== //
+// COMPONENTE: CHART LEGEND                   //
+// ========================================== //
+// Re-exportación del componente Legend de Recharts.
+
 const ChartLegend = RechartsPrimitive.Legend;
+
+// ========================================== //
+// COMPONENTE: CHART LEGEND CONTENT           //
+// ========================================== //
+// Personalización del contenido de la leyenda, permitiendo mostrar iconos y colores
+// coherentes con la configuración del gráfico.
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
@@ -274,7 +323,11 @@ const ChartLegendContent = React.forwardRef<
 });
 ChartLegendContent.displayName = "ChartLegend";
 
-// Helper to extract item config from a payload.
+// ========================================== //
+// FUNCIÓN AUXILIAR: GET PAYLOAD CONFIG       //
+// ========================================== //
+// Extrae la configuración correspondiente a un elemento específico del payload de Recharts.
+
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
   if (typeof payload !== "object" || payload === null) {
     return undefined;
@@ -299,5 +352,9 @@ function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key:
 
   return configLabelKey in config ? config[configLabelKey] : config[key as keyof typeof config];
 }
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL GRÁFICO      //
+// ========================================== //
 
 export { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, ChartStyle };

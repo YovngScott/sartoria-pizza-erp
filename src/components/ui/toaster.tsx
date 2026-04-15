@@ -1,5 +1,15 @@
+// ========================================== //
+//           COMPONENTE: TOASTER                //
+// ========================================== //
+
 import { useToast } from "@/hooks/use-toast";
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
+
+// ========================================== //
+// COMPONENTE: TOASTER                        //
+// ========================================== //
+// Renderiza todas las notificaciones (toasts) activas gestionadas por el hook useToast.
+// Se debe colocar en el nivel superior de la aplicación (generalmente en App.tsx).
 
 export function Toaster() {
   const { toasts } = useToast();

@@ -1,3 +1,8 @@
+// ========================================== //
+//           TIPOS: SUPABASE DATABASE           //
+// ========================================== //
+// Definición completa de tipos generados para la base de datos Supabase.
+
 export type Json =
   | string
   | number
@@ -6,9 +11,14 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+// ========================================== //
+// INTERFAZ PRINCIPAL DE LA BASE DE DATOS     //
+// ========================================== //
+
 export interface Database {
   public: {
     Tables: {
+      // --- AUDITORÍA DE LOGS ---
       auditoria_logs: {
         Row: {
           accion: string;
@@ -41,6 +51,7 @@ export interface Database {
           usuario_id?: string;
         };
       };
+      // --- CLIENTES ---
       clientes: {
         Row: {
           activo: boolean;
@@ -73,6 +84,7 @@ export interface Database {
           updated_at?: string;
         };
       };
+      // --- INGREDIENTES ---
       ingredientes: {
         Row: {
           activo: boolean;
@@ -114,6 +126,7 @@ export interface Database {
           updated_at?: string;
         };
       };
+      // --- MOVIMIENTOS DE INVENTARIO ---
       inventario_movimientos: {
         Row: {
           cantidad: number;
@@ -155,6 +168,7 @@ export interface Database {
           usuario_id?: string | null;
         };
       };
+      // --- ITEMS DE PEDIDO ---
       pedido_items: {
         Row: {
           cantidad: number;
@@ -190,6 +204,7 @@ export interface Database {
           subtotal?: number;
         };
       };
+      // --- PEDIDOS ---
       pedidos: {
         Row: {
           cliente_id: number | null;
@@ -240,6 +255,7 @@ export interface Database {
           usuario_id?: string | null;
         };
       };
+      // --- PERFILES DE USUARIO ---
       perfiles: {
         Row: {
           activo: boolean;
@@ -269,6 +285,7 @@ export interface Database {
           usuario_id?: string;
         };
       };
+      // --- PIZZAS ---
       pizzas: {
         Row: {
           activa: boolean;
@@ -316,6 +333,7 @@ export interface Database {
           updated_at?: string;
         };
       };
+      // --- RECETAS ---
       recetas: {
         Row: {
           cantidad_requerida: number;
@@ -342,6 +360,7 @@ export interface Database {
           pizza_id?: number;
         };
       };
+      // --- ROLES ---
       roles: {
         Row: {
           codigo: string;
@@ -365,6 +384,7 @@ export interface Database {
           nombre?: string;
         };
       };
+      // --- UNIDADES DE MEDIDA ---
       unidades_medida: {
         Row: {
           activa: boolean;
@@ -391,6 +411,7 @@ export interface Database {
           nombre?: string;
         };
       };
+      // --- ASIGNACIÓN DE ROLES ---
       usuario_roles: {
         Row: {
           created_at: string;
@@ -422,6 +443,10 @@ export interface Database {
     Enums: Record<string, never>;
   };
 }
+
+// ========================================== //
+// TIPOS AUXILIARES PARA FACILITAR EL USO     //
+// ========================================== //
 
 type PublicSchema = Database['public'];
 

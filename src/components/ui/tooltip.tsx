@@ -1,13 +1,27 @@
+// ========================================== //
+//           COMPONENTE: TOOLTIP                //
+// ========================================== //
+
 import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTES BASE DE RADIX TOOLTIP          //
+// ========================================== //
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
 const Tooltip = TooltipPrimitive.Root;
 
 const TooltipTrigger = TooltipPrimitive.Trigger;
+
+// ========================================== //
+// COMPONENTE: TOOLTIP CONTENT                //
+// ========================================== //
+// Pequeño globo de texto que aparece al pasar el cursor sobre un elemento.
+// Incluye animaciones suaves y estilos de posicionamiento.
 
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
@@ -24,5 +38,9 @@ const TooltipContent = React.forwardRef<
   />
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL TOOLTIP      //
+// ========================================== //
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

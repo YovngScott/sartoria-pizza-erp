@@ -1,11 +1,25 @@
+// ========================================== //
+//           COMPONENTE: POPOVER                //
+// ========================================== //
+
 import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "@/lib/utils";
 
+// ========================================== //
+// COMPONENTES BASE DE RADIX POPOVER          //
+// ========================================== //
+
 const Popover = PopoverPrimitive.Root;
 
 const PopoverTrigger = PopoverPrimitive.Trigger;
+
+// ========================================== //
+// COMPONENTE: POPOVER CONTENT                //
+// ========================================== //
+// Contenedor que flota sobre la interfaz al activar el disparador.
+// Incluye estilos de sombra, bordes y animaciones de entrada.
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
@@ -25,5 +39,9 @@ const PopoverContent = React.forwardRef<
   </PopoverPrimitive.Portal>
 ));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL POPOVER      //
+// ========================================== //
 
 export { Popover, PopoverTrigger, PopoverContent };

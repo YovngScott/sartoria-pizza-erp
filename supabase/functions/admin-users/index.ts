@@ -1,4 +1,14 @@
+// ========================================== //
+//           SUPABASE FUNCTION: ADMIN USERS     //
+// ========================================== //
+// Gestión administrativa de usuarios desde el backend (Edge Function).
+// Permite listar, crear, actualizar y eliminar administradores.
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// ========================================== //
+// CONFIGURACIÓN DE CABECERAS CORS Y JSON     //
+// ========================================== //
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,6 +22,10 @@ const jsonHeaders = {
   'Content-Type': 'application/json',
 };
 
+// ========================================== //
+// INTERFAZ DEL CUERPO DE LA PETICIÓN         //
+// ========================================== //
+
 interface RequestBody {
   action?: 'list' | 'create' | 'update' | 'delete';
   activo?: boolean;
@@ -21,11 +35,17 @@ interface RequestBody {
   usuario_id?: string;
 }
 
+// ========================================== //
+// MANEJADOR PRINCIPAL DE LA FUNCIÓN (DENO)   //
+// ========================================== //
+
 Deno.serve(async (req) => {
+  // Manejo de peticiones pre-vuelo OPTIONS para CORS
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Solo se permiten peticiones POST
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Metodo no soportado' }), {
       headers: jsonHeaders,
@@ -33,10 +53,12 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Obtención de variables de entorno de Supabase
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
+  // Verificación de cabecera de autorización
   const authHeader = req.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
     return new Response(JSON.stringify({ error: 'No autorizado' }), {
@@ -45,6 +67,7 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Cliente para verificar la identidad del usuario que llama a la función
   const userClient = createClient(supabaseUrl, anonKey, {
     global: {
       headers: {
@@ -65,7 +88,10 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Cliente con rol de servicio para operaciones privilegiadas en BD
   const adminDb = createClient(supabaseUrl, serviceRoleKey);
+  
+  // Verificación de que el llamador tenga rol de administrador
   const { data: adminRole } = await adminDb
     .from('usuario_roles')
     .select('id, rol_id, roles!inner(codigo)')
@@ -90,6 +116,7 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Obtención del ID del rol 'admin'
   const { data: adminRoleRow, error: adminRoleError } = await adminDb
     .from('roles')
     .select('id, codigo')
@@ -104,6 +131,7 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // --- ACCIÓN: LISTAR USUARIOS ---
     if (action === 'list') {
       const { data: roles, error } = await adminDb
         .from('usuario_roles')
@@ -141,6 +169,7 @@ Deno.serve(async (req) => {
       );
     }
 
+    // --- ACCIÓN: CREAR USUARIO ---
     if (action === 'create') {
       if (!body.email || !body.password) {
         return new Response(
@@ -194,6 +223,7 @@ Deno.serve(async (req) => {
       );
     }
 
+    // --- ACCIÓN: ACTUALIZAR USUARIO ---
     if (action === 'update') {
       if (!body.usuario_id) {
         return new Response(JSON.stringify({ error: 'usuario_id es obligatorio' }), {
@@ -243,6 +273,7 @@ Deno.serve(async (req) => {
       );
     }
 
+    // --- ACCIÓN: ELIMINAR USUARIO ---
     if (action === 'delete') {
       if (!body.usuario_id) {
         return new Response(JSON.stringify({ error: 'usuario_id es obligatorio' }), {

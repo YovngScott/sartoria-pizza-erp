@@ -1,3 +1,7 @@
+// ========================================== //
+//           COMPONENTE: COMMAND                //
+// ========================================== //
+
 import * as React from "react";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
@@ -5,6 +9,11 @@ import { Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+// ========================================== //
+// COMPONENTE: COMMAND (CONTENEDOR RAÍZ)      //
+// ========================================== //
+// Implementación base del menú de comandos utilizando la librería 'cmdk'.
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -21,6 +30,11 @@ const Command = React.forwardRef<
 ));
 Command.displayName = CommandPrimitive.displayName;
 
+// ========================================== //
+// COMPONENTE: COMMAND DIALOG                 //
+// ========================================== //
+// Envuelve el menú de comandos en un diálogo modal para acceso rápido.
+
 interface CommandDialogProps extends DialogProps {}
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
@@ -34,6 +48,11 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
     </Dialog>
   );
 };
+
+// ========================================== //
+// COMPONENTE: COMMAND INPUT                  //
+// ========================================== //
+// Campo de búsqueda filtrable para el menú de comandos.
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
@@ -54,6 +73,11 @@ const CommandInput = React.forwardRef<
 
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
+// ========================================== //
+// COMPONENTE: COMMAND LIST                   //
+// ========================================== //
+// Contenedor que despliega la lista de resultados del comando.
+
 const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
@@ -67,12 +91,22 @@ const CommandList = React.forwardRef<
 
 CommandList.displayName = CommandPrimitive.List.displayName;
 
+// ========================================== //
+// COMPONENTE: COMMAND EMPTY                  //
+// ========================================== //
+// Mensaje que se muestra cuando no hay resultados que coincidan con la búsqueda.
+
 const CommandEmpty = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Empty>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
 >((props, ref) => <CommandPrimitive.Empty ref={ref} className="py-6 text-center text-sm" {...props} />);
 
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
+
+// ========================================== //
+// COMPONENTE: COMMAND GROUP                  //
+// ========================================== //
+// Agrupa items de comandos relacionados bajo un encabezado opcional.
 
 const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
@@ -90,6 +124,11 @@ const CommandGroup = React.forwardRef<
 
 CommandGroup.displayName = CommandPrimitive.Group.displayName;
 
+// ========================================== //
+// COMPONENTE: COMMAND SEPARATOR              //
+// ========================================== //
+// Línea divisoria entre grupos o items de comandos.
+
 const CommandSeparator = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator>
@@ -97,6 +136,11 @@ const CommandSeparator = React.forwardRef<
   <CommandPrimitive.Separator ref={ref} className={cn("-mx-1 h-px bg-border", className)} {...props} />
 ));
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName;
+
+// ========================================== //
+// COMPONENTE: COMMAND ITEM                   //
+// ========================================== //
+// Item individual seleccionable dentro del menú de comandos.
 
 const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
@@ -114,10 +158,19 @@ const CommandItem = React.forwardRef<
 
 CommandItem.displayName = CommandPrimitive.Item.displayName;
 
+// ========================================== //
+// COMPONENTE: COMMAND SHORTCUT               //
+// ========================================== //
+// Muestra el atajo de teclado asociado a un comando.
+
 const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
   return <span className={cn("ml-auto text-xs tracking-widest text-muted-foreground", className)} {...props} />;
 };
 CommandShortcut.displayName = "CommandShortcut";
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL COMANDO      //
+// ========================================== //
 
 export {
   Command,

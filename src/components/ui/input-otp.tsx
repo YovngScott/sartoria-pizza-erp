@@ -1,8 +1,18 @@
+// ========================================== //
+//           COMPONENTE: INPUT OTP              //
+// ========================================== //
+
 import * as React from "react";
 import { OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: INPUT OTP (RAÍZ)               //
+// ========================================== //
+// Implementación de entrada para códigos de un solo uso (OTP).
+// Utiliza la librería 'input-otp' para el manejo de la lógica de entrada.
 
 const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (
@@ -16,10 +26,21 @@ const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.Compo
 );
 InputOTP.displayName = "InputOTP";
 
+// ========================================== //
+// COMPONENTE: INPUT OTP GROUP                //
+// ========================================== //
+// Agrupa varios slots de OTP para una mejor organización visual.
+
 const InputOTPGroup = React.forwardRef<React.ElementRef<"div">, React.ComponentPropsWithoutRef<"div">>(
   ({ className, ...props }, ref) => <div ref={ref} className={cn("flex items-center", className)} {...props} />,
 );
 InputOTPGroup.displayName = "InputOTPGroup";
+
+// ========================================== //
+// COMPONENTE: INPUT OTP SLOT                 //
+// ========================================== //
+// Representa un carácter individual dentro del campo OTP.
+// Maneja el estado activo, el cursor parpadeante y la visualización del carácter.
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
@@ -49,6 +70,11 @@ const InputOTPSlot = React.forwardRef<
 });
 InputOTPSlot.displayName = "InputOTPSlot";
 
+// ========================================== //
+// COMPONENTE: INPUT OTP SEPARATOR            //
+// ========================================== //
+// Elemento visual para separar grupos de slots de OTP (ej. un guion o punto).
+
 const InputOTPSeparator = React.forwardRef<React.ElementRef<"div">, React.ComponentPropsWithoutRef<"div">>(
   ({ ...props }, ref) => (
     <div ref={ref} role="separator" {...props}>
@@ -57,5 +83,9 @@ const InputOTPSeparator = React.forwardRef<React.ElementRef<"div">, React.Compon
   ),
 );
 InputOTPSeparator.displayName = "InputOTPSeparator";
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES DEL OTP          //
+// ========================================== //
 
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator };

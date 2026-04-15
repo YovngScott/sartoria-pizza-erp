@@ -1,9 +1,18 @@
+// ========================================== //
+//           COMPONENTE: NAVIGATION MENU        //
+// ========================================== //
+
 import * as React from "react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+// ========================================== //
+// COMPONENTE: NAVIGATION MENU (RAÍZ)         //
+// ========================================== //
+// Sistema de navegación principal con soporte para sub-menús y vistas previas (viewport).
 
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
@@ -20,6 +29,11 @@ const NavigationMenu = React.forwardRef<
 ));
 NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
 
+// ========================================== //
+// COMPONENTE: NAVIGATION MENU LIST           //
+// ========================================== //
+// Lista que contiene los items de navegación.
+
 const NavigationMenuList = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.List>
@@ -34,9 +48,18 @@ NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName;
 
 const NavigationMenuItem = NavigationMenuPrimitive.Item;
 
+// ========================================== //
+// ESTILOS: NAVIGATION MENU TRIGGER           //
+// ========================================== //
+
 const navigationMenuTriggerStyle = cva(
   "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50",
 );
+
+// ========================================== //
+// COMPONENTE: NAVIGATION MENU TRIGGER        //
+// ========================================== //
+// Botón que despliega el contenido de un item de navegación.
 
 const NavigationMenuTrigger = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
@@ -56,6 +79,11 @@ const NavigationMenuTrigger = React.forwardRef<
 ));
 NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
 
+// ========================================== //
+// COMPONENTE: NAVIGATION MENU CONTENT        //
+// ========================================== //
+// Contenido que se muestra al activar un disparador de navegación.
+
 const NavigationMenuContent = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Content>
@@ -72,6 +100,11 @@ const NavigationMenuContent = React.forwardRef<
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
 
 const NavigationMenuLink = NavigationMenuPrimitive.Link;
+
+// ========================================== //
+// COMPONENTE: NAVIGATION MENU VIEWPORT       //
+// ========================================== //
+// Contenedor animado donde se renderiza el contenido de los menús activos.
 
 const NavigationMenuViewport = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
@@ -90,6 +123,11 @@ const NavigationMenuViewport = React.forwardRef<
 ));
 NavigationMenuViewport.displayName = NavigationMenuPrimitive.Viewport.displayName;
 
+// ========================================== //
+// COMPONENTE: NAVIGATION MENU INDICATOR      //
+// ========================================== //
+// Elemento visual (ej. flechita) que indica el item activo.
+
 const NavigationMenuIndicator = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Indicator>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Indicator>
@@ -106,6 +144,10 @@ const NavigationMenuIndicator = React.forwardRef<
   </NavigationMenuPrimitive.Indicator>
 ));
 NavigationMenuIndicator.displayName = NavigationMenuPrimitive.Indicator.displayName;
+
+// ========================================== //
+// EXPORTACIÓN DE COMPONENTES                  //
+// ========================================== //
 
 export {
   navigationMenuTriggerStyle,

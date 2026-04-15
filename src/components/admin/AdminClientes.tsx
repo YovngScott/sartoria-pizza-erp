@@ -1,5 +1,11 @@
+// ========================================== //
+// IMPORTACIONES
+// ========================================== //
+// Importamos hooks de React para memorización de cálculos y gestión de estados locales
 import { useMemo, useState } from 'react';
+// Importamos componentes para animaciones fluidas y manejo de presencia de elementos
 import { AnimatePresence, motion } from 'framer-motion';
+// Importamos una colección de iconos de lucide-react para enriquecer la interfaz visualmente
 import {
   Download,
   Loader2,
@@ -13,21 +19,37 @@ import {
   Users,
   X,
 } from 'lucide-react';
+// Importamos la utilidad de notificaciones 'toast' para feedback inmediato al usuario
 import { toast } from 'sonner';
+// Importamos el cliente de Supabase para operaciones CRUD en la base de datos
 import { supabase } from '@/integrations/supabase/client';
+// Importamos tipos de TypeScript generados automáticamente para la base de datos Supabase
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+// Importamos el contexto de la aplicación para acceder a los datos globales de clientes
 import { useApp } from '@/contexts/CartContext';
 
+// ========================================== //
+// TIPOS Y DEFINICIONES
+// ========================================== //
+/**
+ * Tipo Cliente: Representa la estructura de un registro de la tabla 'clientes'.
+ */
 type Cliente = Tables<'clientes'>;
 
+/**
+ * Interfaz ClienteForm: Estructura de datos utilizada para los formularios de creación y edición.
+ */
 interface ClienteForm {
-  activo: boolean;
-  direccion: string;
-  email: string;
-  nombre: string;
-  telefono: string;
+  activo: boolean;   // Estado del cliente (activo/inactivo)
+  direccion: string; // Dirección física del cliente
+  email: string;     // Correo electrónico de contacto
+  nombre: string;    // Nombre completo o razón social
+  telefono: string;  // Número de teléfono de contacto
 }
 
+/**
+ * emptyForm: Estado inicial por defecto para un nuevo formulario de cliente.
+ */
 const emptyForm: ClienteForm = {
   activo: true,
   direccion: '',
@@ -36,36 +58,69 @@ const emptyForm: ClienteForm = {
   telefono: '',
 };
 
+// ========================================== //
+// COMPONENTE PRINCIPAL (ADMINCLIENTES)
+// ========================================== //
+/**
+ * AdminClientes: Componente de administración para la gestión integral del directorio de clientes.
+ */
 const AdminClientes = () => {
+  // ========================================== //
+  // ESTADO Y HOOKS
+  // ========================================== //
+  // Obtenemos los clientes y la función de refresco del contexto global
   const { clientes, refreshData } = useApp();
+  // Estado para controlar el proceso de guardado asíncrono
   const [saving, setSaving] = useState(false);
+  // Controla la visibilidad del formulario de cliente
   const [showForm, setShowForm] = useState(false);
+  // Almacena el ID del cliente que se está editando (null si es creación)
   const [editingId, setEditingId] = useState<number | null>(null);
+  // Almacena el ID del cliente en proceso de eliminación
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  // Almacena el objeto cliente que requiere confirmación para ser eliminado
   const [confirmDelete, setConfirmDelete] = useState<Cliente | null>(null);
+  // Estado del formulario actual vinculado a los inputs
   const [form, setForm] = useState<ClienteForm>(emptyForm);
 
+  // ========================================== //
+  // CÁLCULOS MEMORIZADOS (KPIs)
+  // ========================================== //
+  // Calculamos el total de clientes con estado activo
   const totalActivos = useMemo(
     () => clientes.filter((cliente) => cliente.activo).length,
     [clientes]
   );
+  // Calculamos cuántos clientes tienen un correo electrónico registrado
   const totalConEmail = useMemo(
     () => clientes.filter((cliente) => Boolean(cliente.email)).length,
     [clientes]
   );
 
+  // ========================================== //
+  // FUNCIONES DE MANEJO DE INTERFAZ
+  // ========================================== //
+  /**
+   * resetForm: Limpia los estados del formulario y lo oculta.
+   */
   const resetForm = () => {
     setForm(emptyForm);
     setEditingId(null);
     setShowForm(false);
   };
 
+  /**
+   * openCreate: Prepara la interfaz para la creación de un nuevo cliente.
+   */
   const openCreate = () => {
     setForm(emptyForm);
     setEditingId(null);
     setShowForm(true);
   };
 
+  /**
+   * openEdit: Carga los datos de un cliente existente en el formulario para su edición.
+   */
   const openEdit = (cliente: Cliente) => {
     setForm({
       activo: cliente.activo,
@@ -78,8 +133,16 @@ const AdminClientes = () => {
     setShowForm(true);
   };
 
+  // ========================================== //
+  // EXPORTACIÓN DE DATOS
+  // ========================================== //
+  /**
+   * exportCSV: Genera un archivo CSV con la lista completa de clientes.
+   */
   const exportCSV = () => {
+    // Definimos las cabeceras de las columnas
     const headers = ['Nombre', 'Email', 'Telefono', 'Direccion', 'Estado'];
+    // Transformamos cada cliente en una fila de datos
     const rows = clientes.map((cliente) => [
       cliente.nombre,
       cliente.email || '',
@@ -88,12 +151,14 @@ const AdminClientes = () => {
       cliente.activo ? 'Activo' : 'Inactivo',
     ]);
 
+    // Combinamos cabeceras y filas escapando comillas dobles
     const csv = [headers, ...rows]
       .map((row) =>
         row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(',')
       )
       .join('\n');
 
+    // Creamos el blob y disparamos la descarga
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
@@ -104,7 +169,14 @@ const AdminClientes = () => {
     toast.success('Clientes exportados a CSV');
   };
 
+  // ========================================== //
+  // OPERACIONES DE PERSISTENCIA (CRUD)
+  // ========================================== //
+  /**
+   * handleSave: Realiza la inserción o actualización del cliente en Supabase.
+   */
   const handleSave = async () => {
+    // Validación básica: el nombre es obligatorio
     if (!form.nombre.trim()) {
       toast.error('El nombre del cliente es obligatorio');
       return;
@@ -112,6 +184,7 @@ const AdminClientes = () => {
 
     setSaving(true);
 
+    // Preparamos el objeto de datos para la base de datos
     const payload: TablesInsert<'clientes'> & TablesUpdate<'clientes'> = {
       activo: form.activo,
       direccion: form.direccion.trim() || null,
@@ -122,18 +195,22 @@ const AdminClientes = () => {
 
     try {
       if (editingId != null) {
+        // Operación de actualización si tenemos un ID de edición
         const { error } = await supabase.from('clientes').update(payload).eq('id', editingId);
         if (error) throw error;
         toast.success(`"${payload.nombre}" actualizado`);
       } else {
+        // Operación de inserción si es un cliente nuevo
         const { error } = await supabase.from('clientes').insert(payload);
         if (error) throw error;
         toast.success(`"${payload.nombre}" creado`);
       }
 
+      // Refrescamos los datos globales y reseteamos el formulario
       await refreshData();
       resetForm();
     } catch (error) {
+      // Manejo centralizado de errores con feedback al usuario
       const message =
         error instanceof Error ? error.message : 'No se pudo guardar el cliente';
       toast.error(message);
@@ -142,6 +219,9 @@ const AdminClientes = () => {
     }
   };
 
+  /**
+   * handleDelete: Elimina definitivamente un cliente de la base de datos.
+   */
   const handleDelete = async (cliente: Cliente) => {
     setDeletingId(cliente.id);
 
@@ -152,6 +232,7 @@ const AdminClientes = () => {
       setConfirmDelete(null);
       await refreshData();
     } catch (error) {
+      // Tratamiento especial para errores de integridad referencial (FK)
       const databaseError =
         error && typeof error === 'object' && 'code' in error
           ? (error as { code?: string })
@@ -171,8 +252,12 @@ const AdminClientes = () => {
     }
   };
 
+  // ========================================== //
+  // RENDERIZADO
+  // ========================================== //
   return (
     <div className="space-y-4">
+      {/* SECCIÓN: HEADER Y BOTONES DE ACCIÓN */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="flex items-center gap-2 font-display text-lg font-semibold text-foreground">
@@ -184,12 +269,14 @@ const AdminClientes = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Botón para exportar el listado actual */}
           <button
             onClick={exportCSV}
             className="flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-foreground transition-all hover:bg-muted"
           >
             <Download className="h-4 w-4" /> Exportar CSV
           </button>
+          {/* Botón para abrir el formulario de nuevo cliente */}
           <button
             onClick={openCreate}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90"
@@ -199,27 +286,23 @@ const AdminClientes = () => {
         </div>
       </div>
 
+      {/* SECCIÓN: KPIs RÁPIDOS */}
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Total clientes
-          </p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Total clientes</p>
           <p className="mt-2 text-2xl font-semibold text-foreground">{clientes.length}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Clientes activos
-          </p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Clientes activos</p>
           <p className="mt-2 text-2xl font-semibold text-success">{totalActivos}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Con email
-          </p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Con email</p>
           <p className="mt-2 text-2xl font-semibold text-foreground">{totalConEmail}</p>
         </div>
       </div>
 
+      {/* SECCIÓN: FORMULARIO DINÁMICO (ANIMADO) */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -245,6 +328,7 @@ const AdminClientes = () => {
               </button>
             </div>
 
+            {/* Inputs del formulario en grid responsivo */}
             <div className="grid gap-4 md:grid-cols-2">
               <input
                 type="text"
@@ -295,6 +379,7 @@ const AdminClientes = () => {
               />
             </div>
 
+            {/* Botones de acción del formulario */}
             <div className="mt-4 flex items-center gap-2">
               <button
                 onClick={handleSave}
@@ -321,6 +406,7 @@ const AdminClientes = () => {
         )}
       </AnimatePresence>
 
+      {/* SECCIÓN: TABLA DE LISTADO */}
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
@@ -333,6 +419,7 @@ const AdminClientes = () => {
             </tr>
           </thead>
           <tbody>
+            {/* Renderizado condicional para estado vacío */}
             {clientes.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-4 py-10 text-center text-sm italic text-muted-foreground">
@@ -345,12 +432,14 @@ const AdminClientes = () => {
                   key={cliente.id}
                   className="border-b border-border/50 transition-colors hover:bg-secondary/50"
                 >
+                  {/* Celda: Información Principal */}
                   <td className="px-4 py-4">
                     <div>
                       <p className="font-medium text-foreground">{cliente.nombre}</p>
                       <p className="text-xs text-muted-foreground">ID #{cliente.id}</p>
                     </div>
                   </td>
+                  {/* Celda: Datos de Contacto */}
                   <td className="px-4 py-4">
                     <div className="space-y-1 text-muted-foreground">
                       <p className="flex items-center gap-2">
@@ -363,12 +452,14 @@ const AdminClientes = () => {
                       </p>
                     </div>
                   </td>
+                  {/* Celda: Dirección con truncado inteligente */}
                   <td className="max-w-sm px-4 py-4 text-muted-foreground">
                     <div className="flex items-start gap-2">
                       <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                      <span>{cliente.direccion || 'Sin direccion'}</span>
+                      <span className="line-clamp-2">{cliente.direccion || 'Sin direccion'}</span>
                     </div>
                   </td>
+                  {/* Celda: Badge de Estado */}
                   <td className="px-4 py-4 text-center">
                     {cliente.activo ? (
                       <span className="rounded-full bg-success/20 px-2 py-0.5 text-xs font-medium text-success">
@@ -380,6 +471,7 @@ const AdminClientes = () => {
                       </span>
                     )}
                   </td>
+                  {/* Celda: Botones CRUD por fila */}
                   <td className="px-4 py-4 text-center">
                     <div className="flex items-center justify-center gap-1">
                       <button
@@ -408,6 +500,7 @@ const AdminClientes = () => {
         </table>
       </div>
 
+      {/* SECCIÓN: MODAL DE CONFIRMACIÓN DE ELIMINACIÓN */}
       <AnimatePresence>
         {confirmDelete && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
@@ -446,4 +539,7 @@ const AdminClientes = () => {
   );
 };
 
+// ========================================== //
+// EXPORTACIÓN
+// ========================================== //
 export default AdminClientes;
